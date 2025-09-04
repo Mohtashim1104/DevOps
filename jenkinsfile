@@ -1,23 +1,32 @@
 pipeline {
     agent any
+
     stages {
-        stage('Checkout Code') {
+        stage('Checkout') {
             steps {
-                // Replace with your Git repo URL and branch
-                git branch: 'main', url: 'hhttps://github.com/Mohtashim1104/DevOps/tree/main
+                git branch: 'main', url: 'https://github.com/ashu501/Git-example.git'
             }
         }
-        stage('Publish HTML Report') {
+
+        stage('Deploy') {
             steps {
-                publishHTML(target: [
-                    allowMissing: false,
-                    alwaysLinkToLastBuild: true,
-                    keepAll: true,
-                    reportDir: '.', // if form.html is in repo root
-                    reportFiles: 'form.html',
-                    reportName: 'Registration Form'
-                ])
+                sh '''
+                    mkdir -p deployed_html
+                    cp form.html deployed_html/
+                '''
             }
+        }
+    }
+
+    post {
+        success {
+            publishHTML(target: [
+                allowMissing: false,
+                keepAll: true,
+                reportDir: 'deployed_html',
+                reportFiles: 'form.html',
+                reportName: 'My Webpage'
+            ])
         }
     }
 }
